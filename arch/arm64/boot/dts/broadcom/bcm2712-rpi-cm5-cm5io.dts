@@ -3,3 +3,4 @@
 
 #include "bcm2712-rpi-cm5.dtsi"
 #include "bcm2712-rpi-cm5io.dtsi"
+#include "bcm2712-rpi-cm5io-seco-ew2025.dtsi"

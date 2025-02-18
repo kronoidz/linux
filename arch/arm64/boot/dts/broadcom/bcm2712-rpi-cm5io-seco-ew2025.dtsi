@@ -1,0 +1,98 @@
+&i2c6 {
+    status = "okay";
+
+    bridge@2c {
+		compatible = "ti,sn65dsi83";
+		reg = <0x2c>;
+		enable-gpios = <&rp1_gpio 34 GPIO_ACTIVE_HIGH>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+
+				bridge_in_dsi: endpoint {
+					remote-endpoint = <&dsi_out_bridge>;
+					data-lanes = <1 2 3 4>;
+				};
+			};
+
+			port@2 {
+				reg = <2>;
+
+				bridge_out_panel: endpoint {
+					remote-endpoint = <&panel_out_bridge>;
+				};
+			};
+		};
+	};
+};
+
+&rp1_dsi0 {
+    status = "okay";
+
+    port {
+        dsi_out_bridge: endpoint {
+            remote-endpoint = <&bridge_in_dsi>;
+        };
+    };
+};
+
+&cam0_reg {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&rp1_gpio_34>;
+	gpio = <&rp1_gpio 34 GPIO_ACTIVE_HIGH>;
+	regulator-always-on;
+};
+
+/ {
+	cam0_reg_pwm: cam0_reg_pwm {
+		compatible = "regulator-fixed";
+		regulator-name = "cam0_reg_pwm";
+		enable-active-high;
+		status = "okay";
+		gpio = <&rp1_gpio 35 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&rp1_gpio_35>;
+		regulator-always-on;
+	};
+
+	panel {
+		compatible = "panel-lvds";
+		width-mm = <217>;
+		height-mm = <136>;
+		data-mapping = "jeida-18";
+
+		panel-timing {
+			clock-frequency = <71100000>;
+			hactive = <1280>;
+			vactive = <800>;
+			hfront-porch = <50>;
+			hsync-len = <60>;
+			hback-porch = <50>;
+			vfront-porch = <7>;
+			vsync-len = <9>;
+			vback-porch = <7>;
+		};
+
+		port {
+			panel_out_bridge: endpoint {
+				remote-endpoint = <&bridge_out_panel>;
+			};
+		};
+	};
+};
+
+&rp1_gpio {
+	rp1_gpio_34: rp1_gpio_34 {
+		function = "gpio";
+		pins = "gpio34";
+	};
+	rp1_gpio_35: rp1_gpio_35 {
+		function = "gpio";
+		pins = "gpio35";
+	};
+};
