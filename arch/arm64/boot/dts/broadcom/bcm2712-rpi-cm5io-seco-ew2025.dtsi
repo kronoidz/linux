@@ -1,4 +1,4 @@
-&i2c6 {
+&i2c_csi_dsi0 {
     status = "okay";
 
     bridge@2c {
@@ -14,7 +14,7 @@
 
 				bridge_in_dsi: endpoint {
 					remote-endpoint = <&dsi_out_bridge>;
-					data-lanes = <1 2 3 4>;
+					data-lanes = <0 1 2 3>;
 				};
 			};
 
@@ -29,13 +29,14 @@
 	};
 };
 
-&rp1_dsi0 {
+&dsi0 {
     status = "okay";
 
     port {
         dsi_out_bridge: endpoint {
             remote-endpoint = <&bridge_in_dsi>;
-        };
+			data-lanes = <0 1 2 3>;
+		};
     };
 };
 
@@ -48,6 +49,7 @@
 };
 
 / {
+#if 0
 	cam0_reg_pwm: cam0_reg_pwm {
 		compatible = "regulator-fixed";
 		regulator-name = "cam0_reg_pwm";
@@ -58,12 +60,23 @@
 		pinctrl-0 = <&rp1_gpio_35>;
 		regulator-always-on;
 	};
+#endif
+	lcd_backlight: lcd-backlight {
+		compatible = "gpio-backlight";
+		gpios = <&rp1_gpio 35 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&rp1_gpio_35>;
+		default-on;
+		status = "okay";
+	};
 
-	panel {
+	panel: panel {
 		compatible = "panel-lvds";
 		width-mm = <217>;
 		height-mm = <136>;
 		data-mapping = "vesa-24";
+		backlight = <&lcd_backlight>;
+		status = "okay";
 
 		panel-timing {
 			clock-frequency = <71100000>;
@@ -94,4 +107,12 @@
 		function = "gpio";
 		pins = "gpio35";
 	};
+};
+
+&i2c0if {
+	status = "okay";
+};
+
+&i2c0mux {
+	status = "okay";
 };
