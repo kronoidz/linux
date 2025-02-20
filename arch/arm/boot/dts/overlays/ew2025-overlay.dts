@@ -71,14 +71,15 @@
                 pinctrl-names = "default";
                 pinctrl-0 = <&rp1_gpio_35>;
                 default-on;
-                status = "okay";
+                status = "disabled";
             };
             panel: panel {
                 compatible = "panel-lvds";
                 width-mm = <217>;
                 height-mm = <136>;
                 data-mapping = "vesa-24";
-                backlight = <&lcd_backlight>;
+                //backlight = <&lcd_backlight>;
+                backlight = <0>;
                 status = "okay";
         
                 panel-timing {
@@ -107,7 +108,7 @@
                 gpio = <&rp1_gpio 35 GPIO_ACTIVE_HIGH>;
                 pinctrl-names = "default";
                 pinctrl-0 = <&rp1_gpio_35>;
-                status = "disabled";
+                status = "okay";
             };
         };
     };
