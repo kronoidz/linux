@@ -433,12 +433,13 @@ static void sn65dsi83_atomic_pre_enable(struct drm_bridge *bridge,
 	/* Set up LVDS output config (DSI84,DSI85) */
 	if (!ctx->lvds_dual_link)
 		val |= REG_LVDS_FMT_LVDS_LINK_CFG;
-
+	
 	regmap_write(ctx->regmap, REG_LVDS_FMT, val);
 	regmap_write(ctx->regmap, REG_LVDS_VCOM, 0x05);
 	regmap_write(ctx->regmap, REG_LVDS_LANE,
 		     (ctx->lvds_dual_link_even_odd_swap ?
 		      REG_LVDS_LANE_EVEN_ODD_SWAP : 0) |
+			  REG_LVDS_LANE_CHA_REVERSE_LVDS |
 		     REG_LVDS_LANE_CHA_LVDS_TERM |
 		     REG_LVDS_LANE_CHB_LVDS_TERM);
 	regmap_write(ctx->regmap, REG_LVDS_CM, 0x00);
