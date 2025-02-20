@@ -99,6 +99,16 @@
                     };
                 };
             };
+            bl_reg: bl_reg {
+                compatible = "regulator-fixed";
+                regulator-name = "bl_reg";
+                regulator-always-on;
+                enable-active-high;
+                gpio = <&rp1_gpio 35 GPIO_ACTIVE_HIGH>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&rp1_gpio_35>;
+                status = "disabled";
+            };
         };
     };
 

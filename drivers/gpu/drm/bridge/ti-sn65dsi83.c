@@ -338,8 +338,11 @@ static void sn65dsi83_atomic_pre_enable(struct drm_bridge *bridge,
 	u16 val;
 	int ret;
 
+	printk("sn65dsi83_atomic_pre_enable1\n");
+
 	ret = regulator_enable(ctx->vcc);
 	if (ret) {
+		printk("Failed to enable vcc\n");
 		dev_err(ctx->dev, "Failed to enable vcc: %d\n", ret);
 		return;
 	}
@@ -434,6 +437,8 @@ static void sn65dsi83_atomic_pre_enable(struct drm_bridge *bridge,
 	if (!ctx->lvds_dual_link)
 		val |= REG_LVDS_FMT_LVDS_LINK_CFG;
 	
+	printk("sn65dsi83_atomic_pre_enable: REG_LVDS_LANE_CHA_REVERSE_LVDS\n");
+
 	regmap_write(ctx->regmap, REG_LVDS_FMT, val);
 	regmap_write(ctx->regmap, REG_LVDS_VCOM, 0x05);
 	regmap_write(ctx->regmap, REG_LVDS_LANE,
@@ -494,6 +499,8 @@ static void sn65dsi83_atomic_enable(struct drm_bridge *bridge,
 {
 	struct sn65dsi83 *ctx = bridge_to_sn65dsi83(bridge);
 	unsigned int pval;
+
+	printk("sn65dsi83_atomic_enable\n");
 
 	/* Clear all errors that got asserted during initialization. */
 	regmap_read(ctx->regmap, REG_IRQ_STAT, &pval);
@@ -581,6 +588,8 @@ static int sn65dsi83_parse_dt(struct sn65dsi83 *ctx, enum sn65dsi83_model model)
 {
 	struct drm_bridge *panel_bridge;
 	struct device *dev = ctx->dev;
+
+	printk("sn65dsi83_parse_dt\n");
 
 	ctx->lvds_dual_link = false;
 	ctx->lvds_dual_link_even_odd_swap = false;
