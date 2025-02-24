@@ -91,6 +91,7 @@
                 data-mapping = "vesa-24";
                 //backlight = <&lcd_backlight>;
                 backlight = <0>;
+                rotation = <180>;
                 status = "okay";
         
                 panel-timing {
