@@ -1,3 +1,5 @@
+#include <dt-bindings/gpio/gpio.h>
+
 /dts-v1/;
 /plugin/;
 
@@ -8,7 +10,6 @@
 		target = <&i2c_csi_dsi0>;
 		__overlay__ {
 			status = "okay";
-
 			pi4io: pi4io@44 {
 				compatible = "pericom,pi4ioe5v6408";
 				reg = <0x44>;
@@ -16,6 +17,108 @@
 				#gpio-cells = <2>;
 				status = "okay";
 			};
+
+			sn65dsi83: bridge@2c {
+                compatible = "ti,sn65dsi83";
+                reg = <0x2c>;
+                status = "okay";
+
+                ports {
+                    #address-cells = <1>;
+                    #size-cells = <0>;
+        
+                    port@0 {
+                        reg = <0>;
+        
+                        in_dsi: endpoint {
+                            remote-endpoint = <&dsi_out>;
+                            data-lanes = <1 2 3 4>;
+                        };
+                    };
+        
+                    port@2 {
+                        reg = <2>;
+        
+                        lvds_out: endpoint {
+                            remote-endpoint = <&in_lvds>;
+                        };
+                    };
+                };
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <&dsi0>;
+		__overlay__{
+			status = "okay";
+			port {
+				dsi_out: endpoint {
+					remote-endpoint = <&in_dsi>;
+				};
+			};
+		};
+	};
+
+	fragment@2 {
+		target-path = "/";
+		__overlay__ {
+			panel: panel {
+                compatible = "panel-lvds";
+                width-mm = <217>;
+                height-mm = <136>;
+                data-mapping = "vesa-24";
+                backlight = <0>;
+                status = "okay";
+        
+                panel-timing {
+                    clock-frequency = <71100000>;
+                    hactive = <1280>;
+                    vactive = <800>;
+                    hfront-porch = <50>;
+                    hsync-len = <60>;
+                    hback-porch = <50>;
+                    vfront-porch = <7>;
+                    vsync-len = <9>;
+                    vback-porch = <7>;
+                };
+        
+                port {
+                    in_lvds: endpoint {
+                        remote-endpoint = <&lvds_out>;
+                    };
+                };
+            };
+
+			display_enable: display_enable {
+                compatible = "regulator-fixed";
+                regulator-name = "display_enable";
+                regulator-always-on;
+                enable-active-high;
+                gpio = <&pi4io 0 GPIO_ACTIVE_HIGH>;
+                status = "okay";
+            };
+
+			backlight: backlight {
+                compatible = "regulator-fixed";
+                regulator-name = "backlight";
+                regulator-always-on;
+                enable-active-high;
+                gpio = <&rp1_gpio 35 GPIO_ACTIVE_HIGH>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&rp1_gpio_35>;
+                status = "okay";
+            };
+		};
+	};
+
+	fragment@3 {
+		target = <&rp1_gpio>;
+		__overlay__ {
+			rp1_gpio_35: rp1_gpio_35 {
+                function = "gpio";
+                pins = "gpio35";
+            };
 		};
 	};
 };
