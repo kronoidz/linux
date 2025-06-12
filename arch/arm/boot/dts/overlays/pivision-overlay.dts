@@ -1,4 +1,5 @@
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
 
 /dts-v1/;
 /plugin/;
@@ -45,6 +46,17 @@
                     };
                 };
 			};
+
+			mxt1066td: touch@4a {
+                compatible = "atmel,maxtouch";
+                reg = <0x4a>;
+                interrupt-parent = <&rp1_gpio>;
+                interrupts = <34 IRQ_TYPE_EDGE_FALLING>;
+                pinctrl-names = "default";
+                pinctrl-0 = <&rp1_gpio_34>;
+                reset-gpios = <&pi4io 1 GPIO_ACTIVE_LOW>;
+                status = "okay";
+            };
 		};
 	};
 
@@ -112,10 +124,22 @@
 	fragment@3 {
 		target = <&rp1_gpio>;
 		__overlay__ {
+			rp1_gpio_34: rp1_gpio_34 {
+                function = "gpio";
+                pins = "gpio34";
+				bias-pull-up;
+            };
 			rp1_gpio_35: rp1_gpio_35 {
                 function = "gpio";
                 pins = "gpio35";
             };
 		};
 	};
+
+    fragment@4 {
+        target = <&cam0_reg>;
+        __overlay__ {
+            status = "disabled";
+        };
+    };
 };
